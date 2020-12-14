@@ -1,0 +1,36 @@
+{
+  "name": "krylov-pizza-back",
+  "version": "1.0.0",
+  "description": "Test Task",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "server": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksv741/pizza-back.git"
+  },
+  "keywords": [
+    "Express",
+    "Node",
+    "Mongo"
+  ],
+  "author": "Krylov Sergey <ksv741@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksv741/pizza-back/issues"
+  },
+  "homepage": "https://github.com/ksv741/pizza-back#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.3",
+    "express": "^4.17.1",
+    "express-validator": "^6.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
