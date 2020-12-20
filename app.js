@@ -7,6 +7,7 @@ const app = express()
 
 const AuthRoute = require('./routes/auth.routes')
 
+app.use(express.json({extended: true}))
 app.use(
     cors({
         credentials: true,

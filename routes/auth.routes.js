@@ -28,19 +28,21 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
-                message: '[Error] Incorrect sign up data '
+                message: `[Error] Incorrect sign up data. ${errors.array()[0].msg}`
             })
         }
 
         // Create new user
-        const hashedPassword = await bcrypt.has(password, 12)
+        const hashedPassword = await bcrypt.hash(password, 12)
         const user = new User({email, password: hashedPassword, name})
         await user.save()
         res.status(201).json({message: '[Success] User create'})
+        console.log('Create new User');
 
     } catch (e) {
         // Simplification: All errors would be return 500 status
-        res.status(500).json({message: '[Error] Something goes wrong'})
+        console.log('Error', e.message)
+        res.status(500).json({message: '[Error] Something goes wrong', error: e})
     }
 })
 
@@ -59,7 +61,7 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
-                    message: '[Error] Incorrect sign up data'
+                    message: '[Error] Incorrect sign in data'
                 })
             }
 
@@ -76,12 +78,47 @@ router.post(
                 config.get('JWT_SECRET'),
                 {expiresIn: '1h'}
             )
-            res.json({token, userId: user.id})
+            res.json({token, userId: user.id, name: user.name})
 
         } catch (e) {
             // Simplification: All errors would be return 500 status
             res.status(500).json({message: '[Error] Something goes wrong'})
         }
 })
+
+router.post(
+    '/isSignIn',
+    async (req, res) => {
+        const {userId, token} = req.body
+
+        if (!userId || !token) {
+            return res.status(400).json({message: '[ERROR] Incorrect user data'})
+        }
+
+        const user = await User.findOne({_id: userId})
+        if (!user) {
+            return res.status(400).json({message: `[ERROR] not found user with id ${userId}`})
+        }
+
+        try {
+            const verify = await jwt.verify(token, config.get('JWT_SECRET'))
+            if (verify.iat > verify.exp) {
+                throw new Error('[ERROR] token is invalid')
+            }
+        } catch(e) {
+            return res.status(400).json({message: e.message || '[ERROR] Wrong token'})
+        }
+
+
+        return res.status(200).json({
+            user: {
+                name: user.name,
+                email: user.email,
+                history: user.history,
+            }
+        })
+
+    }
+)
 
 module.exports = router
