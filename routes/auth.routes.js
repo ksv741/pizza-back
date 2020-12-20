@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
-const {check, validationResult} = require('express-validatidator')
+const {check, validationResult} = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 
@@ -16,7 +16,7 @@ router.post(
     async (req, res) => {
     try {
         const errors = validationResult(req)
-        const {email, password} = req.body
+        const {email, password, name} = req.body
 
         // Email must be unique
         const candidate = await User.findOne({email})
@@ -34,7 +34,7 @@ router.post(
 
         // Create new user
         const hashedPassword = await bcrypt.has(password, 12)
-        const user = new User({email, password: hashedPassword})
+        const user = new User({email, password: hashedPassword, name})
         await user.save()
         res.status(201).json({message: '[Success] User create'})
 
@@ -74,7 +74,7 @@ router.post(
             const token = jwt.sign(
                 {userId: user.id},
                 config.get('JWT_SECRET'),
-                {exiresIn: '1h'}
+                {expiresIn: '1h'}
             )
             res.json({token, userId: user.id})
 
@@ -84,4 +84,4 @@ router.post(
         }
 })
 
-module.exports = router()
+module.exports = router

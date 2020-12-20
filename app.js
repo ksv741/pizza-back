@@ -1,3 +1,4 @@
+const cors =  require('cors');
 const express = require('express')
 const config = require('config')
 const mongoose = require('mongoose')
@@ -5,6 +6,14 @@ const mongoose = require('mongoose')
 const app = express()
 
 const AuthRoute = require('./routes/auth.routes')
+
+app.use(
+    cors({
+        credentials: true,
+        origin: ["http://localhost:4200"],
+        optionsSuccessStatus: 200
+    })
+);
 app.use('/api/auth', AuthRoute)
 
 const PORT = config.get('BACKEND_PORT') || 5000
