@@ -8,7 +8,7 @@ router.post(
     '/make',
     async (req, res) => {
         try {
-            const {order, name, email, address, payMethod} = req.body
+            const {order, name, email, address, paymentMethod} = req.body
 
             if (!name || !email || !address || !Object.keys(order)){
                 return res.status(400).json({message: '[ERROR] Incorrect order'})
@@ -26,7 +26,7 @@ router.post(
             )
             const newOrder = new Order({
                 order: pizzas,
-                payMethod,
+                paymentMethod,
                 time: new Date(),
                 owner: user._id,
                 address
