@@ -6,6 +6,8 @@ const mongoose = require('mongoose')
 const app = express()
 
 const AuthRoute = require('./routes/auth.routes')
+const OrderRoute = require('./routes/order.routes')
+const HistoryRoute = require('./routes/history.routes')
 
 app.use(express.json({extended: true}))
 app.use(
@@ -16,6 +18,8 @@ app.use(
     })
 );
 app.use('/api/auth', AuthRoute)
+app.use('/api/order', OrderRoute)
+app.use('/api/history', HistoryRoute)
 
 const PORT = config.get('BACKEND_PORT') || 5000
 

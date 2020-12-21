@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const {check, validationResult} = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const auth = require('../middleware/auth.middleware')
 
 const router = Router()
 
@@ -37,11 +38,9 @@ router.post(
         const user = new User({email, password: hashedPassword, name})
         await user.save()
         res.status(201).json({message: '[Success] User create'})
-        console.log('Create new User');
 
     } catch (e) {
         // Simplification: All errors would be return 500 status
-        console.log('Error', e.message)
         res.status(500).json({message: '[Error] Something goes wrong', error: e})
     }
 })
@@ -87,37 +86,23 @@ router.post(
 })
 
 router.post(
-    '/isSignIn',
+    '/login',
+    auth,
     async (req, res) => {
-        const {userId, token} = req.body
-
-        if (!userId || !token) {
-            return res.status(400).json({message: '[ERROR] Incorrect user data'})
-        }
-
-        const user = await User.findOne({_id: userId})
-        if (!user) {
-            return res.status(400).json({message: `[ERROR] not found user with id ${userId}`})
-        }
-
         try {
-            const verify = await jwt.verify(token, config.get('JWT_SECRET'))
-            if (verify.iat > verify.exp) {
-                throw new Error('[ERROR] token is invalid')
-            }
+            const user = await User.findOne({_id: req.user.userId})
+
+            if (!user) return res.status(400).json({message: '[ERROR] Authorization error'})
+
+            return res.status(200).json({
+                user: {
+                    name: user.name,
+                    email: user.email,
+                }
+            })
         } catch(e) {
-            return res.status(400).json({message: e.message || '[ERROR] Wrong token'})
+            res.status(400).json({message: `[ERROR] Something goes wrong`})
         }
-
-
-        return res.status(200).json({
-            user: {
-                name: user.name,
-                email: user.email,
-                history: user.history,
-            }
-        })
-
     }
 )
 
