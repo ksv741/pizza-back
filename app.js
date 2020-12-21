@@ -21,6 +21,14 @@ app.use('/api/auth', AuthRoute)
 app.use('/api/order', OrderRoute)
 app.use('/api/history', HistoryRoute)
 
+// if(process.env.NODE_ENV === 'production'){
+//     app.use('/', express.static(path.join(__dirname, 'client', 'dist')))
+//
+//     app.get('*', (req, res)=>{
+//         res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
+//     })
+// }
+
 const PORT = config.get('BACKEND_PORT') || 5000
 
 async function start() {
