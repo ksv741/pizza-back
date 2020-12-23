@@ -1,0 +1,5 @@
+{
+  "BACKEND_PORT": 80,
+  "MONGO_URI": "mongodb+srv://pizza-database-admin:RWm-73J-883-Eby@cluster0.x1ap8.mongodb.net/app?retryWrites=true&w=majority",
+  "JWT_SECRET": "pizza test task"
+}
